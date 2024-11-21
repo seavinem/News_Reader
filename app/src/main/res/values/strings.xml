@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="back">Back</string>
+    <string name="add_to_bookmarks">Add to bookmarks</string>
+    <string name="no_bookmarks">No available bookmarks</string>
+    <string name="app_name">News Reader</string>
+
+    <string name="author">Author: %1$s</string>
+    <string name="publishedAt">Published at: %1$s</string>
+    <string name="source">Source: %1$s</string>
+    <string name="remove_from_bookmarks">Remove from bookmarks</string>
+    <string name="loading_content">Loading content…</string>
+    <string name="more">Click the news text to read more</string>
+
+</resources>

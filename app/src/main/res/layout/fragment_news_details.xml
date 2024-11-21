@@ -1,0 +1,108 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@drawable/content_background"
+        android:elevation="4dp">
+
+        <!-- Заголовок новости -->
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp"
+            android:textColor="?attr/colorText"
+            tools:text="Title of the News Article" />
+
+        <!-- Автор -->
+        <TextView
+            android:id="@+id/tvAuthor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textStyle="italic"
+            android:layout_marginBottom="8dp"
+            android:textColor="?attr/colorSecondary"
+            tools:text="Author: John Doe" />
+
+        <!-- Дата публикации -->
+        <TextView
+            android:id="@+id/tvPublishedAt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp"
+            android:textColor="?attr/colorSecondary"
+            tools:text="Published at: 2024-11-18" />
+
+        <!-- Источник -->
+        <TextView
+            android:id="@+id/tvSource"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:layout_marginBottom="16dp"
+            android:textColor="?attr/colorSecondary"
+            tools:text="Source: Example News" />
+
+        <TextView
+            android:id="@+id/tvLoadingContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/loading_content"
+            android:visibility="visible"
+            android:textAppearance="?attr/textAppearanceBody1"
+            android:layout_gravity="center"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Основное содержание -->
+        <TextView
+            android:id="@+id/tvContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:textSize="16sp"
+            android:lineSpacingExtra="4dp"
+            android:textColor="?attr/colorOnSurface"
+            android:visibility="gone"
+            tools:text="Content of the news article goes here." />
+
+        <!-- Кнопки управления -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <!-- Кнопка "Назад" -->
+            <Button
+                android:id="@+id/btnBack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/back"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="@color/button_back_color"
+                android:textColor="@android:color/white" />
+
+            <!-- Кнопка "Добавить в закладки" -->
+            <Button
+                android:id="@+id/btnAddBookmark"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/add_to_bookmarks"
+                android:backgroundTint="?attr/colorButtonNormal"
+                android:textColor="@android:color/white" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

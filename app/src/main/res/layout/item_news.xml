@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@drawable/item_background"
+    android:divider="?attr/colorOutline"
+    android:showDividers="middle"
+    android:elevation="2dp">
+
+    <!-- Заголовок новости -->
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="?attr/colorText"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:lineSpacingExtra="2dp"
+        tools:text="Breaking News: Major Event Happens Across the Globe" />
+
+    <!-- Краткое описание -->
+    <TextView
+        android:id="@+id/tvDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="?attr/colorSecondary"
+        android:ellipsize="end"
+        android:maxLines="3"
+        android:layout_marginTop="8dp"
+        android:lineSpacingExtra="2dp"
+        tools:text="This is a brief summary of the article, giving readers an idea of the content." />
+
+    <!-- Источник -->
+    <TextView
+        android:id="@+id/tvSource"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        android:layout_marginTop="12dp"
+        android:textStyle="italic"
+        tools:text="Source: Example News" />
+
+</LinearLayout>

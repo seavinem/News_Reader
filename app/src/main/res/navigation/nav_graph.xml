@@ -1,0 +1,50 @@
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/newsListFragment">
+
+    <fragment
+        android:id="@+id/newsListFragment"
+        android:name="com.example.newsreader.presentation.ui.newslist.NewsListFragment"
+        android:label="News List">
+        <action
+            android:id="@+id/action_newsListFragment_to_newsDetailFragment"
+            app:destination="@id/newsDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/newsDetailFragment"
+        android:name="com.example.newsreader.presentation.ui.newsdetails.NewsDetailsFragment"
+        android:label="News Detail">
+        <argument
+            android:name="title"
+            app:argType="string" />
+        <argument
+            android:name="description"
+            app:argType="string" />
+        <argument
+            android:name="content"
+            app:argType="string" />
+        <argument
+            android:name="url"
+            app:argType="string" />
+        <argument
+            android:name="author"
+            app:argType="string" />
+        <argument
+            android:name="publishedAt"
+            app:argType="string" />
+        <argument
+            android:name="source"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/bookmarksFragment"
+        android:name="com.example.newsreader.presentation.ui.bookmarks.BookmarksFragment"
+        android:label="Bookmarks">
+        <action
+            android:id="@+id/action_bookmarksFragment_to_newsDetailFragment"
+            app:destination="@id/newsDetailFragment" />
+    </fragment>
+</navigation>

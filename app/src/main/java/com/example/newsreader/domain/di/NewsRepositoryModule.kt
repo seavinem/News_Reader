@@ -1,7 +1,7 @@
 package com.example.newsreader.domain.di
 
-import com.example.newsreader.domain.repository.NewsRepository
-import com.example.newsreader.domain.repository.NewsRepositoryImpl
+import com.example.newsreader.domain.repositories.NewsRepository
+import com.example.newsreader.data.repositories.NewsRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

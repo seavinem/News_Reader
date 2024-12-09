@@ -6,11 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.newsreader.databinding.FragmentBookmarksBinding
 import com.example.newsreader.presentation.ui.newslist.adapter.NewsAdapter
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class BookmarksFragment : Fragment() {
@@ -37,25 +41,7 @@ class BookmarksFragment : Fragment() {
             adapter = bookmarksAdapter
         }
 
-        viewModel.bookmarks.observe(viewLifecycleOwner) { bookmarks ->
-            bookmarksAdapter.setData(bookmarks)
-
-            if(bookmarksAdapter.itemCount != 0) {
-                binding.tvEmptyBookmarks.visibility = View.GONE
-            }
-            else {
-                binding.tvEmptyBookmarks.visibility = View.VISIBLE
-            }
-        }
-
-        viewModel.progressBarStatus.observe(viewLifecycleOwner) {
-            if (it) {
-                binding.progressDialog.visibility = View.VISIBLE
-            } else {
-                binding.progressDialog.visibility = View.GONE
-            }
-        }
-
+        observeViewModel()
         viewModel.onRefresh()
     }
 
@@ -63,13 +49,13 @@ class BookmarksFragment : Fragment() {
         return NewsAdapter { news ->
             val action = BookmarksFragmentDirections
                 .actionBookmarksFragmentToNewsDetailFragment(
-                    title = news.title,
-                    url = news.url,
-                    description = news.description,
-                    content = news.content,
-                    author = news.author ?: "Unknown author",
-                    publishedAt = news.publishedAt,
-                    source = news.sourceName
+                    title = news.title.ifEmpty { "Unknown title" },
+                    url = news.url.ifEmpty { "Unknown" },
+                    description = news.description.ifEmpty { "Unknown description" },
+                    content = news.content.ifEmpty { "Unknown content" },
+                    author = news.author.ifEmpty { "Unknown author" },
+                    publishedAt = news.publishedAt.ifEmpty { "Unknown date" },
+                    source = news.sourceName.ifEmpty { "Unknown source" }
                 )
             findNavController().navigate(action)
         }
@@ -78,5 +64,24 @@ class BookmarksFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun observeViewModel() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.bookmarks.collect { bookmarks ->
+                        bookmarksAdapter.setData(bookmarks)
+
+                        if(bookmarksAdapter.itemCount != 0) {
+                            binding.tvEmptyBookmarks.visibility = View.GONE
+                        }
+                        else {
+                            binding.tvEmptyBookmarks.visibility = View.VISIBLE
+                        }
+                    }
+                }
+            }
+        }
     }
 }

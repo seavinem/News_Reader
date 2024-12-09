@@ -1,32 +1,23 @@
 package com.example.newsreader.domain.usecase
 
-import android.util.Log
-import com.example.newsreader.data.model.NewsModel
-import com.example.newsreader.domain.repository.NewsRepository
+import com.example.newsreader.domain.model.NewsModel
+import com.example.newsreader.domain.model.NewsResult
+import com.example.newsreader.domain.repositories.NewsRepository
+import com.example.newsreader.domain.utils.Config
+import kotlinx.coroutines.flow.Flow
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import javax.inject.Inject
 
-private const val QUERY = "android"
-
 class GetEverythingUseCase @Inject constructor(
     private val repository: NewsRepository
 ) {
+//    private val QUERY =
 
-    suspend operator fun invoke(): Result<List<NewsModel>> {
-        return kotlin.runCatching {
-            val (today, yesterday) = getFormattedDates()
-            val response = repository.getEverything(QUERY, yesterday, today)
-
-            if (!response.isSuccessful || response.body().isNullOrEmpty()) {
-                val errorMessage = response.errorBody()?.string() ?: "No news articles found"
-                Log.w("GetTopHeadlinesUseCase", errorMessage)
-                throw Exception(errorMessage)
-            }
-
-            response.body()!!.filter { it.title != "[Removed]" }
-        }
+    suspend operator fun invoke(): Flow<NewsResult<List<NewsModel>>> {
+        val (today, yesterday) = getFormattedDates()
+        return repository.getEverything(Config.QUERY, yesterday, today)
     }
 
     private fun getFormattedDates(): Pair<String, String> {

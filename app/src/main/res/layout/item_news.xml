@@ -10,7 +10,6 @@
     android:showDividers="middle"
     android:elevation="2dp">
 
-    <!-- Заголовок новости -->
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="match_parent"
@@ -23,7 +22,6 @@
         android:lineSpacingExtra="2dp"
         tools:text="Breaking News: Major Event Happens Across the Globe" />
 
-    <!-- Краткое описание -->
     <TextView
         android:id="@+id/tvDescription"
         android:layout_width="match_parent"
@@ -36,7 +34,6 @@
         android:lineSpacingExtra="2dp"
         tools:text="This is a brief summary of the article, giving readers an idea of the content." />
 
-    <!-- Источник -->
     <TextView
         android:id="@+id/tvSource"
         android:layout_width="wrap_content"

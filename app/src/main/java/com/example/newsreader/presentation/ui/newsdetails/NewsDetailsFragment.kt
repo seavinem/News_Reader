@@ -1,6 +1,5 @@
 package com.example.newsreader.presentation.ui.newsdetails
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -10,11 +9,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.newsreader.R
 import com.example.newsreader.databinding.FragmentNewsDetailsBinding
+import com.example.newsreader.domain.model.NewsResult
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class NewsDetailsFragment : Fragment() {
@@ -76,41 +80,72 @@ class NewsDetailsFragment : Fragment() {
 
     private fun observeViewModel() {
         binding.apply {
-            viewModel.isBookmarked.observe(viewLifecycleOwner) { isBookmarked ->
-                btnAddBookmark.text =
-                    if(isBookmarked) getString(R.string.remove_from_bookmarks)
-                    else getString(R.string.add_to_bookmarks)
-            }
+            lifecycleScope.launch {
+                repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    launch {
+                        viewModel.isBookmarked.collect { isBookmarked ->
+                            btnAddBookmark.text =
+                                if (isBookmarked) getString(R.string.remove_from_bookmarks)
+                                else getString(R.string.add_to_bookmarks)
+                        }
+                    }
 
-            viewModel.newsContent.observe(viewLifecycleOwner) { loadedContent ->
-                if(loadedContent.isNotEmpty()) {
-                    tvContent.text = loadedContent
-                }
-                else {
-                    tvContent.text = getString(R.string.more)
-                    tvContent.append("\n\n")
-                    tvContent.append(args.content)
-                    tvContent.setOnClickListener {
-                        openNewsInBrowser(args.url)
+                    launch {
+                        viewModel.viewState.collect {
+                            when(it) {
+                                is NewsResult.Loading -> {
+                                    if (it.isLoading) {
+                                        tvContent.visibility = View.GONE
+                                        tvLoadingContent.visibility = View.VISIBLE
+                                    }
+                                    else {
+                                        tvContent.visibility = View.VISIBLE
+                                        tvLoadingContent.visibility = View.GONE
+                                    }
+
+
+                                }
+
+                                is NewsResult.Success -> {
+                                    val loadedContent = it.content
+
+                                    if(loadedContent.isNotEmpty()) {
+                                        tvContent.text = loadedContent
+                                    }
+                                    else {
+                                        tvContent.text = getString(R.string.more)
+                                        tvContent.append("\n\n")
+                                        tvContent.append(args.content)
+                                        tvContent.setOnClickListener {
+                                            openNewsInBrowser(args.url)
+                                        }
+                                    }
+
+                                    tvContent.visibility = View.VISIBLE
+                                    tvLoadingContent.visibility = View.GONE
+                                }
+
+                                is NewsResult.Failure -> {
+                                    tvContent.text = getString(R.string.more)
+                                    tvContent.append("\n\n")
+                                    tvContent.append(args.content)
+                                    tvContent.setOnClickListener {
+                                        openNewsInBrowser(args.url)
+                                    }
+
+                                    showToast(it.errorMessage)
+
+                                    tvContent.visibility = View.VISIBLE
+                                    tvLoadingContent.visibility = View.GONE
+                                }
+                            }
+                        }
                     }
                 }
-                tvContent.visibility = View.VISIBLE
-                tvLoadingContent.visibility = View.GONE
-            }
-
-            viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-                tvLoadingContent.visibility =
-                    if (isLoading) View.VISIBLE else View.GONE
-            }
-        }
-
-        viewModel.errorState.observe(viewLifecycleOwner) { errorMessage ->
-            errorMessage?.let {
-                showToast(it)
-                viewModel.clearError()
             }
         }
     }
+
 
     private fun openNewsInBrowser(url: String) {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))

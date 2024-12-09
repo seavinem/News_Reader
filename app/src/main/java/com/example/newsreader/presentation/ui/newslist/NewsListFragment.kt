@@ -7,13 +7,19 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.newsreader.databinding.FragmentNewsListBinding
+import com.example.newsreader.domain.model.NewsResult
 import com.example.newsreader.presentation.ui.newslist.adapter.NewsAdapter
 import com.example.newsreader.presentation.ui.utils.NewsType
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class NewsListFragment : Fragment() {
@@ -52,13 +58,16 @@ class NewsListFragment : Fragment() {
             addTab(newTab().setText("Top Headlines"))
             addTab(newTab().setText("Everything"))
 
-            viewModel.currentTab.observe(viewLifecycleOwner) { currentTab ->
-                val selectedTab = when(currentTab) {
-                    NewsType.TopHeadlines -> 0
-                    NewsType.Everything -> 1
+            lifecycleScope.launch {
+                repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.currentTab.collect { currentTab ->
+                        val selectedTab = when (currentTab) {
+                            NewsType.TopHeadlines -> 0
+                            NewsType.Everything -> 1
+                        }
+                        getTabAt(selectedTab)?.select()
+                    }
                 }
-                getTabAt(selectedTab)?.select()
-
             }
 
             addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -82,18 +91,24 @@ class NewsListFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        viewModel.viewState.observe(viewLifecycleOwner) { list ->
-            newsAdapter.setData(list)
-        }
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
 
-        viewModel.progressBarStatus.observe(viewLifecycleOwner) { isLoading ->
-            binding.progressDialog.visibility = if (isLoading) View.VISIBLE else View.GONE
-        }
-
-        viewModel.errorState.observe(viewLifecycleOwner) { errorMessage ->
-            errorMessage?.let {
-                showToast(it)
-                viewModel.clearError()
+                launch {
+                    viewModel.viewState.collect {
+                        when (it) {
+                            is NewsResult.Loading -> {
+                                binding.progressDialog.visibility = if (it.isLoading) View.VISIBLE else View.GONE
+                            }
+                            is NewsResult.Success -> {
+                                newsAdapter.setData(it.content)
+                            }
+                            is NewsResult.Failure -> {
+                                showToast(it.errorMessage)
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -102,13 +117,13 @@ class NewsListFragment : Fragment() {
         return NewsAdapter { news ->
             val action = NewsListFragmentDirections
                 .actionNewsListFragmentToNewsDetailFragment(
-                    title = news.title,
-                    url = news.url,
-                    description = news.description,
-                    content = news.content,
-                    author = news.author ?: "Unknown author",
-                    publishedAt = news.publishedAt,
-                    source = news.sourceName
+                    title = news.title.ifEmpty { "Unknown title" },
+                    url = news.url.ifEmpty { "Unknown" },
+                    description = news.description.ifEmpty { "Unknown description" },
+                    content = news.content.ifEmpty { "Unknown content" },
+                    author = news.author.ifEmpty { "Unknown author" },
+                    publishedAt = news.publishedAt.ifEmpty { "Unknown date" },
+                    source = news.sourceName.ifEmpty { "Unknown source" }
                 )
             findNavController().navigate(action)
         }

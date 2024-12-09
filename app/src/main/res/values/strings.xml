@@ -11,5 +11,9 @@
     <string name="remove_from_bookmarks">Remove from bookmarks</string>
     <string name="loading_content">Loading content…</string>
     <string name="more">Click the news text to read more</string>
+    <string name="home_menu">Home</string>
+    <string name="bookmarks_menu">Bookmarks</string>
+    <string name="invalid_api_response_status">Invalid API response status</string>
+    <string name="no_internet_connection">No internet connection</string>
 
 </resources>

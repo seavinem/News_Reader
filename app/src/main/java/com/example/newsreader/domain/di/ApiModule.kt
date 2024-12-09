@@ -1,6 +1,7 @@
 package com.example.newsreader.domain.di
 
 
+import com.example.newsreader.BuildConfig
 import com.example.newsreader.data.api.NewsApi
 import dagger.Module
 import dagger.Provides
@@ -14,12 +15,12 @@ import javax.inject.Named
 import javax.inject.Singleton
 
 
-private const val BASE_URL = "https://newsapi.org/"
-private const val API_KEY = "4cae66487f534af89e397aadb0f5df8f"
-
 @Module
 @InstallIn(SingletonComponent::class)
 object ApiModule {
+
+    private const val BASE_URL = BuildConfig.BASE_URL
+    private const val API_KEY = BuildConfig.API_KEY
 
     @Singleton
     @Provides

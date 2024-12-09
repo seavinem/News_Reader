@@ -1,12 +1,15 @@
-package com.example.newsreader.domain.repository
+package com.example.newsreader.data.repositories
 
 import android.content.Context
 import com.example.newsreader.data.database.BookmarkEntity
 import com.example.newsreader.data.database.BookmarksDatabase
-import com.example.newsreader.data.model.NewsModel
+import com.example.newsreader.domain.model.NewsModel
+import com.example.newsreader.domain.repositories.BookmarksRepository
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import java.util.UUID
 
 class BookmarksRepositoryImpl(
     applicationContext: Context
@@ -20,10 +23,10 @@ class BookmarksRepositoryImpl(
         }
     }
 
-    override suspend fun getAllBookmarks(): List<NewsModel> {
-        return withContext(IO) {
-            db.bookmarkDao().getAll().map { mapToNewsModel(it) }
-        }
+    override suspend fun getAllBookmarks(): Flow<List<NewsModel>> {
+        return db.bookmarkDao().getAll()
+            .map { bookmarks -> bookmarks.map { mapToNewsModel(it) } }
+            .flowOn(IO)
     }
 
     override suspend fun saveBookmark(bookmark: BookmarkEntity) {

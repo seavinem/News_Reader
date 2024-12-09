@@ -1,8 +1,8 @@
 package com.example.newsreader.domain.di
 
 import android.content.Context
-import com.example.newsreader.domain.repository.BookmarksRepository
-import com.example.newsreader.domain.repository.BookmarksRepositoryImpl
+import com.example.newsreader.domain.repositories.BookmarksRepository
+import com.example.newsreader.data.repositories.BookmarksRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

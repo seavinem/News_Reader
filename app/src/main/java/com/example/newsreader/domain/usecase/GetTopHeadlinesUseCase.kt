@@ -7,8 +7,6 @@ import com.example.newsreader.domain.utils.Config
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-//private const val COUNTRY = Config.COUNTRY
-
 class GetTopHeadlinesUseCase @Inject constructor(
     private val repository: NewsRepository
 ) {

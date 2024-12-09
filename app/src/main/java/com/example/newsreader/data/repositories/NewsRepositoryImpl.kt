@@ -101,7 +101,7 @@ class NewsRepositoryImpl @Inject constructor(
                 emit(Success(bodyText))
             }
             catch (error: Exception) {
-                emit(Failure(error.message ?: "Unknown error"))
+                emit(Failure("Unable to load content: ${error.message}"))
             }
         }.flowOn(IO)
 

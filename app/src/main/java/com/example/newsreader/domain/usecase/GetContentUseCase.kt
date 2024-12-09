@@ -1,6 +1,5 @@
 package com.example.newsreader.domain.usecase
 
-import android.util.Log
 import com.example.newsreader.domain.model.NewsResult
 import com.example.newsreader.domain.repositories.NewsRepository
 import kotlinx.coroutines.flow.Flow

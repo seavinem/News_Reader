@@ -13,7 +13,6 @@ import javax.inject.Inject
 class GetEverythingUseCase @Inject constructor(
     private val repository: NewsRepository
 ) {
-//    private val QUERY =
 
     suspend operator fun invoke(): Flow<NewsResult<List<NewsModel>>> {
         val (today, yesterday) = getFormattedDates()

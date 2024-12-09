@@ -19,6 +19,7 @@ import com.example.newsreader.databinding.FragmentNewsDetailsBinding
 import com.example.newsreader.domain.model.NewsResult
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class NewsDetailsFragment : Fragment() {
@@ -99,8 +100,7 @@ class NewsDetailsFragment : Fragment() {
                                         tvLoadingContent.visibility = View.VISIBLE
                                     }
                                     else {
-                                        tvContent.visibility = View.VISIBLE
-                                        tvLoadingContent.visibility = View.GONE
+                                        showContent()
                                     }
 
 
@@ -108,35 +108,20 @@ class NewsDetailsFragment : Fragment() {
 
                                 is NewsResult.Success -> {
                                     val loadedContent = it.content
-
                                     if(loadedContent.isNotEmpty()) {
                                         tvContent.text = loadedContent
                                     }
                                     else {
-                                        tvContent.text = getString(R.string.more)
-                                        tvContent.append("\n\n")
-                                        tvContent.append(args.content)
-                                        tvContent.setOnClickListener {
-                                            openNewsInBrowser(args.url)
-                                        }
+                                        loadArgsContent()
                                     }
 
-                                    tvContent.visibility = View.VISIBLE
-                                    tvLoadingContent.visibility = View.GONE
+                                    showContent()
                                 }
 
                                 is NewsResult.Failure -> {
-                                    tvContent.text = getString(R.string.more)
-                                    tvContent.append("\n\n")
-                                    tvContent.append(args.content)
-                                    tvContent.setOnClickListener {
-                                        openNewsInBrowser(args.url)
-                                    }
-
+                                    loadArgsContent()
                                     showToast(it.errorMessage)
-
-                                    tvContent.visibility = View.VISIBLE
-                                    tvLoadingContent.visibility = View.GONE
+                                    showContent()
                                 }
                             }
                         }
@@ -146,6 +131,23 @@ class NewsDetailsFragment : Fragment() {
         }
     }
 
+    private fun loadArgsContent() {
+        binding.apply {
+            tvContent.text = getString(R.string.more)
+            tvContent.append("\n\n")
+            tvContent.append(args.content)
+            tvContent.setOnClickListener {
+                openNewsInBrowser(args.url)
+            }
+        }
+    }
+
+    private fun showContent() {
+        binding.apply {
+            tvContent.visibility = View.VISIBLE
+            tvLoadingContent.visibility = View.GONE
+        }
+    }
 
     private fun openNewsInBrowser(url: String) {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
